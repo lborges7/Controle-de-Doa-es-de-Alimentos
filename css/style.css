@@ -88,6 +88,10 @@ tr.alerta td { background: #fffaf0; }
 .filtros { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin-bottom: 12px; }
 .filtros .campo { margin-bottom: 0; flex: 1; min-width: 180px; }
 /* #595959 garante contraste >= 4.5:1 sobre branco e sobre o fundo #f4f6f4 (WCAG 2.1 AA) */
+/* Classes que substituem estilos inline (permitem CSP com style-src 'self') */
+.barra-menu { justify-content: space-between; align-items: center; }
+.sem-margem { margin: 0; }
+.titulo-filtro { flex: 2; margin: 0; }
 .rodape { text-align: center; color: #595959; font-size: 13px; padding: 20px; }
 
 @media (max-width: 600px) {
