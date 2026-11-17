@@ -1,0 +1,32 @@
+{
+  "login": {
+    "violacoes": [
+      {
+        "id": "color-contrast",
+        "impacto": "serious",
+        "descricao": "Elements must meet minimum color contrast ratio thresholds",
+        "nos": 4
+      }
+    ],
+    "aprovadas": 19
+  },
+  "menu": {
+    "violacoes": [
+      {
+        "id": "color-contrast",
+        "impacto": "serious",
+        "descricao": "Elements must meet minimum color contrast ratio thresholds",
+        "nos": 1
+      }
+    ],
+    "aprovadas": 18
+  },
+  "movimentacao": {
+    "violacoes": [],
+    "aprovadas": 27
+  },
+  "estoque": {
+    "violacoes": [],
+    "aprovadas": 23
+  }
+}

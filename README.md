@@ -48,10 +48,17 @@ npm test               # executa os testes
 npm run test:coverage  # executa com relatório de cobertura
 ```
 
-- `tests/validacao.test.js` — testes unitários das validações.
-- `tests/app.test.js` — testes de integração (cálculo de estoque, classificação de validade, persistência e sessão).
+| Arquivo | Tipo | Testes |
+|---|---|---|
+| `tests/validacao.test.js` | Unitário (validações) | 13 |
+| `tests/app.test.js` | Integração (estoque, validade, persistência e sessão) | 13 |
+| `tests/integracao-telas.test.js` | Integração das telas (carrega os HTMLs e simula o uso) | 9 |
 
-O pipeline `.github/workflows/ci.yml` roda os testes a cada push e pull request.
+Cobertura atual: **98,61% das linhas** (mínimo exigido: 80%).
+
+O pipeline `.github/workflows/ci.yml` roda os testes e a cobertura a cada push e pull request.
+
+📄 Relatório completo de testes, CI, evidências e acessibilidade: [`docs/evidencias/RELATORIO-TESTES-CI.md`](docs/evidencias/RELATORIO-TESTES-CI.md)
 
 ## 📁 Estrutura de pastas
 
@@ -64,6 +71,7 @@ O pipeline `.github/workflows/ci.yml` roda os testes a cada push e pull request.
 ├── js/validacao.js       # Funções puras de validação
 ├── tests/                # Testes Jest
 ├── docs/prototipo/       # Protótipo estático e screenshots
+├── docs/evidencias/      # Relatório de testes, CI, capturas e acessibilidade
 ├── .github/workflows/    # Pipeline de CI
 └── package.json
 ```
