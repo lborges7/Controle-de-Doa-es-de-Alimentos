@@ -1,0 +1,96 @@
+/* Estilos globais — Controle de Doações de Alimentos */
+:root {
+  --verde: #2e5e2e;
+  --verde-claro: #e8f5e9;
+  --verde-borda: #aec8ae;
+  --texto: #1b3a1b;
+  --amarelo: #9a4b00;
+  --amarelo-fundo: #fff4d6;
+  --vermelho: #b00020;
+  --vermelho-fundo: #fde8e8;
+  --fundo: #f4f6f4;
+  --foco: #ffcc00;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--fundo); color: var(--texto); min-height: 100vh; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+
+/* Cabeçalho */
+.topbar { background: var(--verde); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; }
+.topbar h1 { font-size: 17px; }
+.topbar a, .topbar button { color: #fff; background: rgba(255,255,255,.18); border: 1.5px solid rgba(255,255,255,.5); border-radius: 8px; padding: 10px 14px; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; }
+.hero { background: var(--verde); color: #fff; text-align: center; padding: 28px 20px 22px; }
+.hero h1 { font-size: 20px; }
+.hero p { color: #c8e6c9; font-size: 13px; margin-top: 4px; }
+
+/* Layout */
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+.card { background: #fff; border-radius: 12px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.1); margin-bottom: 20px; }
+.card h2 { font-size: 17px; margin-bottom: 16px; }
+.login-card { max-width: 400px; margin: 32px auto; }
+
+/* Formulários */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.campo { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.campo label { font-size: 13px; font-weight: 600; color: var(--verde); }
+.campo input, .campo select { height: 46px; border: 2px solid var(--verde-borda); border-radius: 8px; padding: 0 12px; font-size: 15px; background: #fff; color: var(--texto); }
+.campo input:focus, .campo select:focus { border-color: var(--verde); outline: none; box-shadow: 0 0 0 3px rgba(46,94,46,.25); }
+.campo input.invalido, .campo select.invalido { border-color: var(--vermelho); }
+.obrigatorio { color: var(--vermelho); }
+
+.btn { display: inline-block; height: 48px; padding: 0 22px; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; background: var(--verde); color: #fff; }
+.btn-bloco { width: 100%; }
+.btn-secundario { background: #fff; color: var(--verde); border: 2px solid var(--verde); }
+
+/* Mensagens */
+.mensagem { border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 14px; }
+.mensagem:empty { display: none; }
+.mensagem.erro { background: var(--vermelho-fundo); color: var(--vermelho); border: 1.5px solid #f5c6cb; }
+.mensagem.sucesso { background: var(--verde-claro); color: var(--verde); border: 1.5px solid #c8e6c9; }
+
+/* Menu */
+.menu { display: grid; gap: 14px; }
+.menu-btn { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border: 2px solid var(--verde-borda); border-radius: 12px; background: #fff; color: var(--texto); text-decoration: none; font-weight: 600; }
+.menu-btn.principal { background: var(--verde); color: #fff; border-color: var(--verde); }
+.menu-btn .icone { font-size: 26px; }
+.menu-btn small { display: block; font-weight: 400; opacity: .8; margin-top: 2px; }
+
+/* Tabelas */
+.tabela-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #e3e9e3; }
+th { background: var(--verde-claro); color: var(--verde); font-size: 13px; }
+tr.vencido td { background: #fff8f8; }
+tr.alerta td { background: #fffaf0; }
+.vazio { text-align: center; color: #777; padding: 20px; }
+
+/* Indicadores de validade */
+.status { display: inline-block; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700; }
+.status.ok { background: var(--verde-claro); color: var(--verde); }
+.status.alerta { background: var(--amarelo-fundo); color: var(--amarelo); }
+.status.vencido { background: var(--vermelho-fundo); color: var(--vermelho); }
+.tag { display: inline-block; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; }
+.tag.entrada { background: var(--verde-claro); color: var(--verde); }
+.tag.saida { background: #e8eef8; color: #1f4e8c; }
+
+/* Alertas e resumo */
+.alertas { display: grid; gap: 10px; margin-bottom: 20px; }
+.alerta-box { border-radius: 10px; padding: 14px 16px; font-size: 14px; border-left: 6px solid; }
+.alerta-box.vencido { background: var(--vermelho-fundo); color: var(--vermelho); border-color: var(--vermelho); }
+.alerta-box.alerta { background: var(--amarelo-fundo); color: var(--amarelo); border-color: var(--amarelo); }
+.resumo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+.resumo div { background: #fff; border-radius: 10px; padding: 14px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+.resumo strong { display: block; font-size: 24px; color: var(--verde); }
+.resumo .r-alerta strong { color: var(--amarelo); }
+.resumo .r-vencido strong { color: var(--vermelho); }
+.filtros { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin-bottom: 12px; }
+.filtros .campo { margin-bottom: 0; flex: 1; min-width: 180px; }
+.rodape { text-align: center; color: #888; font-size: 12px; padding: 20px; }
+
+@media (max-width: 600px) {
+  .container { padding: 12px; }
+  .resumo strong { font-size: 20px; }
+  th, td { padding: 8px; font-size: 13px; }
+}
