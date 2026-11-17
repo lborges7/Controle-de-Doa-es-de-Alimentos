@@ -87,7 +87,8 @@ tr.alerta td { background: #fffaf0; }
 .resumo .r-vencido strong { color: var(--vermelho); }
 .filtros { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin-bottom: 12px; }
 .filtros .campo { margin-bottom: 0; flex: 1; min-width: 180px; }
-.rodape { text-align: center; color: #888; font-size: 12px; padding: 20px; }
+/* #595959 garante contraste >= 4.5:1 sobre branco e sobre o fundo #f4f6f4 (WCAG 2.1 AA) */
+.rodape { text-align: center; color: #595959; font-size: 13px; padding: 20px; }
 
 @media (max-width: 600px) {
   .container { padding: 12px; }
