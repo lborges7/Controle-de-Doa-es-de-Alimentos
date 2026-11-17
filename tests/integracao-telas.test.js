@@ -183,3 +183,16 @@ describe('Tela de estoque (estoque.html)', () => {
     expect(doc.getElementById('alertas').textContent).toBe('');
   });
 });
+
+describe('Segurança das páginas (CSP)', () => {
+  test.each(['index.html', 'movimentacao.html', 'estoque.html'])(
+    '%s declara CSP restritiva e não tem scripts nem estilos embutidos',
+    (arquivo) => {
+      const html = fs.readFileSync(path.join(RAIZ, arquivo), 'utf8');
+      expect(html).toMatch(/Content-Security-Policy[^>]*script-src 'self'/);
+      expect(html).not.toMatch(/<script(?![^>]*\bsrc=)[^>]*>/); // nenhum <script> sem src
+      expect(html).not.toMatch(/\sstyle="/);
+      expect(html).not.toMatch(/\son[a-z]+="/); // nenhum manipulador inline (onclick=...)
+    }
+  );
+});

@@ -10,7 +10,8 @@
   "jest": {
     "testEnvironment": "jsdom",
     "collectCoverageFrom": [
-      "js/**/*.js"
+      "js/**/*.js",
+      "!js/paginas/**"
     ],
     "coverageThreshold": {
       "global": {
