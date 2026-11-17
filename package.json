@@ -1,0 +1,19 @@
+{
+  "name": "controle-doacoes-alimentos",
+  "version": "0.1.0",
+  "description": "MVP para controle de entradas, saídas, estoque e validade de doações de alimentos em bancos de alimentos comunitários.",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "collectCoverageFrom": ["js/**/*.js"]
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "license": "MIT"
+}
