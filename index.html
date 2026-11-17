@@ -71,7 +71,7 @@
 
       document.getElementById('form-login').addEventListener('submit', function (e) {
         e.preventDefault();
-        const dados = { usuario: this.usuario.value.trim(), senha: this.senha.value };
+        const dados = { usuario: this.elements.usuario.value.trim(), senha: this.elements.senha.value };
         const req = validarCamposObrigatorios(dados, ['usuario', 'senha']);
         msg.className = 'mensagem erro';
         if (!req.valido) { msg.textContent = 'Preencha usuário e senha.'; return; }

@@ -82,6 +82,7 @@
   <script>
     (function () {
       const form = document.getElementById('form-mov');
+      const campos = form.elements; // acesso padrão DOM aos campos do formulário
       const msg = document.getElementById('msg');
       const filtro = document.getElementById('filtro-tipo');
       const CAMPOS = ['tipo', 'nome', 'lote', 'quantidade', 'validade', 'responsavel'];
@@ -109,26 +110,26 @@
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         const dados = {};
-        CAMPOS.forEach(function (c) { dados[c] = form[c].value.trim(); form[c].classList.remove('invalido'); });
+        CAMPOS.forEach(function (c) { dados[c] = campos[c].value.trim(); campos[c].classList.remove('invalido'); });
 
         const req = validarCamposObrigatorios(dados, CAMPOS);
         if (!req.valido) {
-          req.faltando.forEach(function (c) { form[c].classList.add('invalido'); });
-          form[req.faltando[0]].focus();
+          req.faltando.forEach(function (c) { campos[c].classList.add('invalido'); });
+          campos[req.faltando[0]].focus();
           return mostrar('Preencha os campos obrigatórios: ' + req.faltando.map(function (c) { return ROTULOS[c]; }).join(', ') + '.', 'erro');
         }
         if (!validarQuantidade(dados.quantidade)) {
-          form.quantidade.classList.add('invalido');
+          campos.quantidade.classList.add('invalido');
           return mostrar('A quantidade deve ser um número inteiro maior que zero.', 'erro');
         }
         if (dados.tipo === 'entrada' && !validarValidade(dados.validade)) {
-          form.validade.classList.add('invalido');
+          campos.validade.classList.add('invalido');
           return mostrar('Para entradas, a validade deve ser uma data futura.', 'erro');
         }
         if (dados.tipo === 'saida') {
           const saldo = saldoDisponivel(obterMovimentacoes(), dados.nome, dados.lote);
           if (Number(dados.quantidade) > saldo) {
-            form.quantidade.classList.add('invalido');
+            campos.quantidade.classList.add('invalido');
             return mostrar('Saldo insuficiente para este alimento/lote. Disponível: ' + saldo + '.', 'erro');
           }
         }
@@ -137,7 +138,7 @@
         mostrar('Movimentação registrada com sucesso!', 'sucesso');
         const responsavel = dados.responsavel;
         form.reset();
-        form.responsavel.value = responsavel;
+        campos.responsavel.value = responsavel;
         renderLista();
       });
 
