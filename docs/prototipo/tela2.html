@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390px, initial-scale=1.0">
+<title>Tela 2 — Registro de Movimentação</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6f4;
+    width: 390px;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    background: #2e5e2e;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .topbar .back-btn {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,.5);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 14px;
+    height: 44px;
+    cursor: pointer;
+    min-width: 100px;
+  }
+  .topbar .back-btn:focus { outline: 3px solid #ffcc00; }
+  .topbar h1 { font-size: 15px; font-weight: 700; }
+
+  /* SECTION SELECTOR */
+  .seg-control {
+    display: flex;
+    margin: 20px 20px 0;
+    border: 2px solid #2e5e2e;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .seg-btn {
+    flex: 1;
+    height: 48px;
+    border: none;
+    background: #fff;
+    color: #2e5e2e;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .seg-btn.active { background: #2e5e2e; color: #fff; }
+  .seg-btn:focus { outline: 3px solid #ffcc00; }
+
+  /* FORM CARD */
+  .form-card {
+    margin: 16px 20px 0;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  }
+  .form-card h2 { font-size: 14px; color: #2e5e2e; font-weight: 700; margin-bottom: 18px; border-bottom: 1px solid #e0e8e0; padding-bottom: 10px; }
+
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1b3a1b;
+    margin-bottom: 6px;
+  }
+  .field .req { color: #b00020; margin-left: 2px; }
+  .field select, .field input {
+    width: 100%;
+    height: 48px;
+    border: 2px solid #aec8ae;
+    border-radius: 8px;
+    padding: 0 14px;
+    font-size: 15px;
+    color: #1b3a1b;
+    background: #fff;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+  }
+  .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%232e5e2e' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+  .field select:focus, .field input:focus { border-color: #2e5e2e; box-shadow: 0 0 0 3px rgba(46,94,46,.25); }
+  .field input[type="number"] { -moz-appearance: textfield; }
+  .field input[inputmode="numeric"] { }
+
+  .helper { font-size: 11px; color: #557755; margin-top: 5px; }
+
+  /* Saldo info box */
+  .saldo-box {
+    background: #e8f5e9;
+    border-left: 4px solid #2e5e2e;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: #1b3a1b;
+  }
+  .saldo-box strong { font-size: 16px; }
+
+  /* ERROR STATE */
+  .field.has-error select, .field.has-error input { border-color: #b00020; }
+  .error-msg {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 6px;
+    background: #fff3f3;
+    border: 1px solid #f5c6cb;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #b00020;
+  }
+  .error-msg .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 12px; margin-top: 6px; }
+  .btn-save {
+    flex: 2;
+    height: 52px;
+    background: #2e5e2e;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-save:focus { outline: 3px solid #ffcc00; outline-offset: 2px; }
+  .btn-cancel {
+    flex: 1;
+    height: 52px;
+    background: #fff;
+    color: #2e5e2e;
+    border: 2px solid #2e5e2e;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-cancel:focus { outline: 3px solid #ffcc00; outline-offset: 2px; }
+
+  /* SUCCESS BANNER */
+  .success-banner {
+    margin: 16px 20px 0;
+    background: #e8f5e9;
+    border: 2px solid #2e5e2e;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .success-banner .s-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: #1b3a1b; margin-bottom: 8px; }
+  .success-banner .s-detail { font-size: 13px; color: #2e5e2e; margin-bottom: 14px; }
+  .success-banner .s-actions { display: flex; flex-direction: column; gap: 10px; }
+  .btn-outline {
+    height: 48px;
+    border: 2px solid #2e5e2e;
+    border-radius: 10px;
+    background: #fff;
+    color: #2e5e2e;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+  }
+  .btn-outline:focus { outline: 3px solid #ffcc00; }
+
+  /* DIVIDER BETWEEN STATES */
+  .state-sep { border: none; border-top: 3px dashed #2e5e2e; opacity: .25; margin: 32px 20px 0; }
+  .state-label { text-align: center; font-size: 11px; color: #666; margin: 8px 0 0; font-style: italic; }
+
+  .link-cadastrar { font-size: 12px; color: #2e5e2e; text-decoration: underline; cursor: pointer; display: inline-block; margin-top: 6px; min-height: 44px; line-height: 44px; }
+</style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="back-btn" aria-label="Voltar ao menu">← Menu</button>
+    <h1>Registrar movimentação</h1>
+    <span style="width:100px"></span>
+  </div>
+
+  <!-- TIPO SELETOR -->
+  <div class="seg-control" role="group" aria-label="Tipo de movimentação">
+    <button class="seg-btn" aria-pressed="false">📥 Entrada</button>
+    <button class="seg-btn active" aria-pressed="true" aria-label="Saída selecionada">📤 Saída</button>
+  </div>
+
+  <!-- FORMULÁRIO — ESTADO COM ERRO -->
+  <div class="form-card">
+    <h2>📤 Saída de alimento</h2>
+
+    <div class="field">
+      <label for="lote">Lote <span class="req" aria-hidden="true">*</span><span class="visually-hidden"> (obrigatório)</span></label>
+      <select id="lote" aria-required="true">
+        <option selected>Leite UHT 1 L — val. 05/12/2026</option>
+        <option>Feijão carioca 1 kg — val. 10/03/2027</option>
+      </select>
+    </div>
+
+    <div class="saldo-box" aria-live="polite" aria-label="Saldo disponível do lote">
+      Saldo disponível: <strong>40 unidades</strong>
+    </div>
+
+    <div class="field has-error">
+      <label for="qtd">Quantidade <span class="req" aria-hidden="true">*</span></label>
+      <input id="qtd" type="number" inputmode="numeric" value="50" min="1" aria-required="true" aria-describedby="qtd-erro">
+      <div class="error-msg" id="qtd-erro" role="alert" aria-live="assertive">
+        <span class="icon" aria-hidden="true">⚠</span>
+        <span>A quantidade não pode ser maior que o saldo de <strong>40 unidades</strong>. Corrija o valor e tente novamente.</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="motivo">Motivo da saída <span class="req" aria-hidden="true">*</span></label>
+      <select id="motivo" aria-required="true">
+        <option value="" disabled selected>Selecione o motivo</option>
+        <option>Distribuição</option>
+        <option>Perda por vencimento</option>
+        <option>Outro motivo</option>
+      </select>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-save" aria-label="Salvar movimentação">Salvar movimentação</button>
+      <button class="btn-cancel" aria-label="Voltar ao menu">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- SEPARADOR DE ESTADOS -->
+  <hr class="state-sep" aria-hidden="true">
+  <p class="state-label">Estado de sucesso ↓</p>
+
+  <!-- SUCESSO -->
+  <div class="success-banner" role="status" aria-live="polite">
+    <div class="s-title"><span aria-hidden="true">✅</span> Saída registrada com sucesso</div>
+    <div class="s-detail">
+      Lote: Leite UHT 1 L — val. 05/12/2026<br>
+      Quantidade: 15 unidades | Motivo: Distribuição<br>
+      Novo saldo: <strong>25 unidades</strong>
+    </div>
+    <div class="s-actions">
+      <button class="btn-save btn-outline" style="background:#2e5e2e;color:#fff;" aria-label="Registrar outra movimentação">Registrar outra movimentação</button>
+      <button class="btn-outline" aria-label="Consultar estoque e alertas">📦 Consultar estoque</button>
+      <button class="btn-outline" aria-label="Voltar ao menu">← Voltar ao menu</button>
+    </div>
+  </div>
+
+  <div style="height:24px"></div>
+</body>
+</html>
