@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Doações de Alimentos — Acesso</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="hero">
+    <h1>🌾 Controle de Doações de Alimentos</h1>
+    <p>Gestão de estoque e validade para bancos de alimentos</p>
+  </header>
+
+  <main class="container">
+    <!-- Login -->
+    <section id="secao-login" class="card login-card" aria-labelledby="titulo-login">
+      <h2 id="titulo-login">Acesso ao sistema</h2>
+      <div id="msg-login" class="mensagem" role="alert"></div>
+      <form id="form-login" novalidate>
+        <div class="campo">
+          <label for="usuario">Usuário <span class="obrigatorio" aria-hidden="true">*</span></label>
+          <input id="usuario" name="usuario" type="text" autocomplete="username" required>
+        </div>
+        <div class="campo">
+          <label for="senha">Senha <span class="obrigatorio" aria-hidden="true">*</span></label>
+          <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="btn btn-bloco" type="submit">Entrar</button>
+        <p class="rodape">Demonstração: usuário <strong>admin</strong> / senha <strong>1234</strong></p>
+      </form>
+    </section>
+
+    <!-- Menu -->
+    <section id="secao-menu" hidden aria-labelledby="titulo-menu">
+      <div class="card">
+        <div class="filtros" style="justify-content: space-between; align-items: center;">
+          <h2 id="titulo-menu" style="margin:0">👤 Olá, <span id="nome-usuario"></span>! O que você quer fazer?</h2>
+          <button id="btn-sair" class="btn btn-secundario" type="button">Sair</button>
+        </div>
+      </div>
+      <nav class="menu" aria-label="Menu principal">
+        <a class="menu-btn principal" href="movimentacao.html">
+          <span class="icone" aria-hidden="true">📋</span>
+          <span>Registrar movimentação<small>Entrada (doação) ou saída (distribuição)</small></span>
+        </a>
+        <a class="menu-btn" href="estoque.html">
+          <span class="icone" aria-hidden="true">📦</span>
+          <span>Consultar estoque<small>Saldos, validades e alertas</small></span>
+        </a>
+      </nav>
+    </section>
+  </main>
+
+  <p class="rodape">Sistema para uso interno — dados armazenados apenas neste navegador.</p>
+
+  <script src="js/validacao.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    (function () {
+      const secLogin = document.getElementById('secao-login');
+      const secMenu = document.getElementById('secao-menu');
+      const msg = document.getElementById('msg-login');
+
+      function render() {
+        const sessao = obterSessao();
+        secLogin.hidden = !!sessao;
+        secMenu.hidden = !sessao;
+        if (sessao) document.getElementById('nome-usuario').textContent = sessao.usuario;
+      }
+
+      document.getElementById('form-login').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const dados = { usuario: this.usuario.value.trim(), senha: this.senha.value };
+        const req = validarCamposObrigatorios(dados, ['usuario', 'senha']);
+        msg.className = 'mensagem erro';
+        if (!req.valido) { msg.textContent = 'Preencha usuário e senha.'; return; }
+        if (!autenticar(dados.usuario, dados.senha)) { msg.textContent = 'Usuário ou senha inválidos.'; return; }
+        msg.textContent = '';
+        this.reset();
+        render();
+      });
+
+      document.getElementById('btn-sair').addEventListener('click', function () { sair(); render(); });
+      render();
+    })();
+  </script>
+</body>
+</html>
