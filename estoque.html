@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estoque e alertas — Controle de Doações</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/validacao.js"></script>
+  <script src="js/app.js"></script>
+  <script>exigirSessao();</script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="index.html" aria-label="Voltar ao menu">← Menu</a>
+    <h1>📦 Estoque e alertas</h1>
+    <a href="movimentacao.html">+ Movimentação</a>
+  </header>
+
+  <main class="container">
+    <div id="alertas" class="alertas" aria-live="polite"></div>
+
+    <div class="resumo" aria-label="Resumo do estoque">
+      <div><strong id="total-ok">0</strong>Lotes OK</div>
+      <div class="r-alerta"><strong id="total-alerta">0</strong>Vencem em até 30 dias</div>
+      <div class="r-vencido"><strong id="total-vencido">0</strong>Vencidos</div>
+    </div>
+
+    <section class="card" aria-labelledby="titulo-estoque">
+      <div class="filtros">
+        <h2 id="titulo-estoque" style="flex:2; margin:0">Itens em estoque</h2>
+        <div class="campo">
+          <label for="busca">Buscar por nome</label>
+          <input id="busca" type="search" placeholder="Ex.: arroz">
+        </div>
+      </div>
+      <div class="tabela-wrapper">
+        <table>
+          <thead>
+            <tr><th>Alimento</th><th>Lote</th><th>Quantidade</th><th>Validade</th><th>Status</th></tr>
+          </thead>
+          <tbody id="corpo-estoque"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const ROTULO = { ok: '✔ OK', alerta: '⚠ Próximo do vencimento', vencido: '✖ Vencido' };
+      const estoque = calcularEstoque(obterMovimentacoes()).map(function (i) {
+        return Object.assign({}, i, { status: classificarValidade(i.validade) });
+      });
+
+      // Resumo
+      ['ok', 'alerta', 'vencido'].forEach(function (s) {
+        document.getElementById('total-' + s).textContent = estoque.filter(function (i) { return i.status === s; }).length;
+      });
+
+      // Alertas destacados no topo
+      const vencidos = estoque.filter(function (i) { return i.status === 'vencido'; });
+      const proximos = estoque.filter(function (i) { return i.status === 'alerta'; });
+      let html = '';
+      if (vencidos.length) html += '<div class="alerta-box vencido" role="alert"><strong>✖ ' + vencidos.length + ' lote(s) vencido(s):</strong> ' +
+        vencidos.map(function (i) { return escaparHtml(i.nome) + ' (lote ' + escaparHtml(i.lote) + ')'; }).join(', ') + '. Retire-os da distribuição.</div>';
+      if (proximos.length) html += '<div class="alerta-box alerta" role="alert"><strong>⚠ ' + proximos.length + ' lote(s) vencem em até 30 dias:</strong> ' +
+        proximos.map(function (i) { return escaparHtml(i.nome) + ' (' + formatarData(i.validade) + ')'; }).join(', ') + '. Priorize a distribuição.</div>';
+      document.getElementById('alertas').innerHTML = html;
+
+      function renderTabela() {
+        const termo = document.getElementById('busca').value.trim().toLowerCase();
+        const itens = estoque.filter(function (i) { return i.nome.toLowerCase().indexOf(termo) !== -1; });
+        const corpo = document.getElementById('corpo-estoque');
+        if (!itens.length) {
+          corpo.innerHTML = '<tr><td colspan="5" class="vazio">' + (estoque.length ? 'Nenhum item encontrado.' : 'Estoque vazio. Registre uma entrada.') + '</td></tr>';
+          return;
+        }
+        corpo.innerHTML = itens.map(function (i) {
+          return '<tr class="' + i.status + '"><td>' + escaparHtml(i.nome) + '</td><td>' + escaparHtml(i.lote) + '</td>' +
+            '<td>' + i.quantidade + '</td><td>' + formatarData(i.validade) + '</td>' +
+            '<td><span class="status ' + i.status + '">' + ROTULO[i.status] + '</span></td></tr>';
+        }).join('');
+      }
+
+      document.getElementById('busca').addEventListener('input', renderTabela);
+      renderTabela();
+    })();
+  </script>
+</body>
+</html>
