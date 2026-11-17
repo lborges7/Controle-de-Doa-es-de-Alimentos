@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390px, initial-scale=1.0">
+<title>Tela 3 — Estoque e Alertas</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6f4;
+    width: 390px;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    background: #2e5e2e;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .topbar .back-btn {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,.5);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 14px;
+    height: 44px;
+    cursor: pointer;
+    min-width: 100px;
+  }
+  .topbar .back-btn:focus { outline: 3px solid #ffcc00; }
+  .topbar h1 { font-size: 15px; font-weight: 700; }
+
+  /* SUMMARY BAR */
+  .summary-bar {
+    display: flex;
+    gap: 10px;
+    margin: 16px 20px 0;
+  }
+  .sum-chip {
+    flex: 1;
+    background: #fff;
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+  }
+  .sum-chip .num { font-size: 20px; font-weight: 700; color: #2e5e2e; }
+  .sum-chip .lbl { font-size: 11px; color: #557755; margin-top: 2px; }
+  .sum-chip.alerta .num { color: #9a4b00; }
+  .sum-chip.vencido .num { color: #b00020; }
+
+  /* SECTION TITLE */
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 20px 20px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1b3a1b;
+  }
+  .section-title .badge {
+    background: #b00020;
+    color: #fff;
+    font-size: 11px;
+    border-radius: 999px;
+    padding: 1px 8px;
+  }
+  .section-title .badge.warn { background: #9a4b00; }
+
+  /* LOTE CARD */
+  .lote-card {
+    margin: 0 20px 12px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+    border-left: 5px solid transparent;
+  }
+  .lote-card.vencido { border-left-color: #b00020; background: #fff8f8; }
+  .lote-card.proximo { border-left-color: #9a4b00; background: #fff8f0; }
+  .lote-card.ok { border-left-color: #2e5e2e; }
+
+  .lote-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .lote-name { font-size: 14px; font-weight: 700; color: #1b3a1b; }
+  .lote-name small { display: block; font-size: 12px; font-weight: 400; color: #666; margin-top: 2px; }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .status-pill.vencido { background: #fde8e8; color: #b00020; border: 1.5px solid #f5c6cb; }
+  .status-pill.proximo { background: #fff0dc; color: #9a4b00; border: 1.5px solid #f5d9a0; }
+  .status-pill.ok { background: #e8f5e9; color: #2e5e2e; border: 1.5px solid #c8e6c9; }
+
+  .lote-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .detail-item {}
+  .detail-item .d-label { font-size: 11px; color: #888; margin-bottom: 2px; }
+  .detail-item .d-value { font-size: 13px; font-weight: 600; color: #1b3a1b; }
+  .detail-item .d-value.alert-val { color: #b00020; }
+  .detail-item .d-value.warn-val { color: #9a4b00; }
+
+  .btn-saida {
+    width: 100%;
+    height: 44px;
+    background: #fff;
+    color: #2e5e2e;
+    border: 2px solid #2e5e2e;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-saida:focus { outline: 3px solid #ffcc00; outline-offset: 2px; }
+  .btn-saida.urgent { background: #2e5e2e; color: #fff; }
+
+  /* PAGINATION */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 10px 20px 20px;
+  }
+  .pag-btn {
+    height: 48px;
+    min-width: 100px;
+    border: 2px solid #2e5e2e;
+    border-radius: 8px;
+    background: #fff;
+    color: #2e5e2e;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .pag-btn:disabled { opacity: .4; cursor: default; }
+  .pag-btn:focus { outline: 3px solid #ffcc00; }
+  .pag-info { font-size: 13px; color: #555; }
+</style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="back-btn" aria-label="Voltar ao menu">← Menu</button>
+    <h1>Estoque e alertas</h1>
+    <span style="width:100px"></span>
+  </div>
+
+  <!-- SUMMARY CHIPS -->
+  <div class="summary-bar" role="region" aria-label="Resumo do estoque">
+    <div class="sum-chip vencido">
+      <div class="num" aria-label="1 lote vencido">1</div>
+      <div class="lbl">Vencido</div>
+    </div>
+    <div class="sum-chip alerta">
+      <div class="num" aria-label="1 lote próximo do vencimento">1</div>
+      <div class="lbl">Próx. vencimento</div>
+    </div>
+    <div class="sum-chip">
+      <div class="num" aria-label="2 lotes no prazo">2</div>
+      <div class="lbl">No prazo</div>
+    </div>
+  </div>
+
+  <!-- VENCIDOS -->
+  <div class="section-title" role="heading" aria-level="2">
+    <span aria-hidden="true">✗</span> Vencidos <span class="badge" aria-label="1 vencido">1</span>
+  </div>
+
+  <article class="lote-card vencido" aria-label="Lote vencido: Macarrão 500g">
+    <div class="lote-top">
+      <div class="lote-name">
+        Macarrão 500 g
+        <small>Lote #002 · kg / un</small>
+      </div>
+      <div class="status-pill vencido" aria-label="Status: Vencido"><span aria-hidden="true">✗</span> VENCIDO</div>
+    </div>
+    <div class="lote-details">
+      <div class="detail-item">
+        <div class="d-label">Saldo</div>
+        <div class="d-value">30 un</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Validade</div>
+        <div class="d-value alert-val">02/11/2026</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Vencimento</div>
+        <div class="d-value alert-val">há 15 dias</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Unidade</div>
+        <div class="d-value">unidade</div>
+      </div>
+    </div>
+    <button class="btn-saida urgent" aria-label="Registrar saída para lote de Macarrão 500g vencido">📤 Registrar saída (vencido)</button>
+  </article>
+
+  <!-- PRÓXIMOS DO VENCIMENTO -->
+  <div class="section-title" role="heading" aria-level="2">
+    <span aria-hidden="true">⚠</span> Próximos do vencimento <span class="badge warn" aria-label="1 lote próximo">1</span>
+  </div>
+
+  <article class="lote-card proximo" aria-label="Lote próximo do vencimento: Leite UHT 1L">
+    <div class="lote-top">
+      <div class="lote-name">
+        Leite UHT 1 L
+        <small>Lote #001</small>
+      </div>
+      <div class="status-pill proximo" aria-label="Status: Vence em 18 dias"><span aria-hidden="true">⚠</span> VENCE EM 18 DIAS</div>
+    </div>
+    <div class="lote-details">
+      <div class="detail-item">
+        <div class="d-label">Saldo</div>
+        <div class="d-value">25 un</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Validade</div>
+        <div class="d-value warn-val">05/12/2026</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Dias restantes</div>
+        <div class="d-value warn-val">18 dias</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Unidade</div>
+        <div class="d-value">unidade</div>
+      </div>
+    </div>
+    <button class="btn-saida" aria-label="Registrar saída para lote de Leite UHT 1L">📤 Registrar saída</button>
+  </article>
+
+  <!-- NO PRAZO -->
+  <div class="section-title" role="heading" aria-level="2">
+    <span aria-hidden="true">✓</span> No prazo
+  </div>
+
+  <article class="lote-card ok" aria-label="Lote no prazo: Feijão carioca 1kg">
+    <div class="lote-top">
+      <div class="lote-name">
+        Feijão carioca 1 kg
+        <small>Lote #003</small>
+      </div>
+      <div class="status-pill ok" aria-label="Status: No prazo"><span aria-hidden="true">✓</span> NO PRAZO</div>
+    </div>
+    <div class="lote-details">
+      <div class="detail-item">
+        <div class="d-label">Saldo</div>
+        <div class="d-value">20 kg</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Validade</div>
+        <div class="d-value">10/03/2027</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Dias restantes</div>
+        <div class="d-value">113 dias</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Unidade</div>
+        <div class="d-value">kg</div>
+      </div>
+    </div>
+    <button class="btn-saida" aria-label="Registrar saída para lote de Feijão carioca 1kg">📤 Registrar saída</button>
+  </article>
+
+  <article class="lote-card ok" aria-label="Lote no prazo: Fubá 1kg">
+    <div class="lote-top">
+      <div class="lote-name">
+        Fubá 1 kg
+        <small>Lote #004</small>
+      </div>
+      <div class="status-pill ok" aria-label="Status: No prazo — 33 dias"><span aria-hidden="true">✓</span> NO PRAZO</div>
+    </div>
+    <div class="lote-details">
+      <div class="detail-item">
+        <div class="d-label">Saldo</div>
+        <div class="d-value">12 kg</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Validade</div>
+        <div class="d-value">20/12/2026</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Dias restantes</div>
+        <div class="d-value">33 dias</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Unidade</div>
+        <div class="d-value">kg</div>
+      </div>
+    </div>
+    <button class="btn-saida" aria-label="Registrar saída para lote de Fubá 1kg">📤 Registrar saída</button>
+  </article>
+
+  <!-- PAGINAÇÃO -->
+  <nav class="pagination" aria-label="Paginação do estoque">
+    <button class="pag-btn" disabled aria-label="Página anterior">← Anterior</button>
+    <span class="pag-info" aria-current="page">Pág. 1 de 1</span>
+    <button class="pag-btn" disabled aria-label="Próxima página">Próxima →</button>
+  </nav>
+
+</body>
+</html>
