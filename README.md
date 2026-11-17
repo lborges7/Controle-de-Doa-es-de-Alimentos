@@ -69,6 +69,7 @@ O pipeline `.github/workflows/ci.yml` roda os testes e a cobertura a cada push e
 ├── css/style.css         # Estilos globais e indicadores de validade
 ├── js/app.js             # Lógica de negócio (localStorage, estoque, validade, sessão)
 ├── js/validacao.js       # Funções puras de validação
+├── js/paginas/           # Scripts de cada tela (sem JavaScript embutido no HTML)
 ├── tests/                # Testes Jest
 ├── docs/prototipo/       # Protótipo estático e screenshots
 ├── docs/evidencias/      # Relatório de testes, CI, capturas e acessibilidade

@@ -60,7 +60,7 @@ Tests:       35 passed, 35 total
 - `app.js`, linha 116 (`exigirSessao`): faz o redirecionamento do navegador para o login, que o jsdom não executa. Nos testes de tela, a sessão é pré-carregada.
 - `validacao.js`, linhas 13-14, 37-38 e 59: ramos defensivos para entradas de tipo inesperado (ex.: `null` no lugar de objeto).
 
-> Observação: a cobertura é medida sobre os arquivos `js/`. Os scripts embutidos nos HTMLs são exercitados pelos testes de tela, mas não entram na métrica.
+> Observação: a cobertura é medida sobre os módulos de lógica (`js/app.js` e `js/validacao.js`). Os scripts de cada tela (`js/paginas/`, extraídos dos HTMLs no PR #2) são exercitados pelos testes de integração das telas, mas não entram na métrica.
 
 ![Relatório de cobertura](img/09_relatorio_cobertura.png)
 
